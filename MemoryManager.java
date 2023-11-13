@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 
-public class MemoryManager {
+public class MemoryManager {//gerenciador de memoria
 
     private static boolean[] frames;
 
@@ -42,13 +42,13 @@ public class MemoryManager {
         return null;
 
     }
-
+    //desaclocar paginas
     public static void dealloc(LinkedList<Integer> pageTable) {
         for (int i = 0; i < pageTable.size(); i++) {
             frames[pageTable.get(i)] = true;
         }
     }
-
+    
     public static int translate(int logicAddress, LinkedList<Integer> pageTable) {
         int pageIndex = pageOfPc(logicAddress);
         int offset = logicAddress % MySystem.PAGE_SIZE;
@@ -60,7 +60,7 @@ public class MemoryManager {
         int pageIndex = logicAddress / MySystem.PAGE_SIZE;
         return pageIndex;
     }
-
+    //print de pagunas
     public static void printPageTable(LinkedList<Integer> pageTable) {
         for (int i = 0; i < pageTable.size(); i++) {
             System.out.println("[" + i + "] " + pageTable.get(i));

@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class ProcessManager {
+public class ProcessManager { //gerenciador de processos
 
     public static LinkedList<PCB> READY_LIST = new LinkedList<>();
     public static LinkedList<PCB> BLOCKED_LIST = new LinkedList<>();
