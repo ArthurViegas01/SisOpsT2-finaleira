@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class ProcessManager { //gerenciador de processos
+public class ProcessManager {
 
     public static LinkedList<PCB> READY_LIST = new LinkedList<>();
     public static LinkedList<PCB> BLOCKED_LIST = new LinkedList<>();
@@ -44,7 +44,7 @@ public class ProcessManager { //gerenciador de processos
         System.out.println(
                 "Criado processo do programa: " + program.getName() + "\nTabela de páginas: " + tablePage + "\n");
 
-        // Libera dispatcher se nao tem processo rodando.
+
         if (READY_LIST.size() == 1 && RUNNING == null) {
             Dispatcher.SEMA_DISPATCHER.release();
         }

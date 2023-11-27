@@ -1,20 +1,15 @@
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-// -------------------------------------------------------------------------------------------------------
-// --------------------- C P U  -  definicoes da CPU ----------------------------------------------------- 
-
 public class CPU extends Thread {
 
 	public Semaphore SEMA_CPU = new Semaphore(0);
 
-	// característica do processador: contexto da CPU ...
-	private int pc; // ... composto de program counter,
-	private Word ir; // instruction register,
-	private int[] reg; // registradores da CPU
+	private int pc;
+	private Word ir;
+	private int[] reg;
 
-	public Word[] m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. e sempre a
-						// mesma.
+	public Word[] m;
 
 	private int currentProcessId;
 	private LinkedList<Integer> pageTable;
@@ -97,29 +92,22 @@ public class CPU extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				// Espera semaforo.
 				SEMA_CPU.acquire();
 
 				int instructionsCounter = 0;
 
-				// execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente
-				// setado
 				while (true) {
 
 					instructionsCounter++;
 
-					// FETCH
-					ir = m[MemoryManager.translate(pc, pageTable)]; // busca posicao da memoria apontada por pc, guarda
-																	// em ir
+					ir = m[MemoryManager.translate(pc, pageTable)];
 					int physicalAddress;
 
-					// if debug
 					showState();
 
-					// EXECUTA INSTRUCAO NO ir
-					switch (ir.opc) { // para cada opcode, sua execução
+					switch (ir.opc) {
 
-						case LDI: // Rd ← k
+						case LDI:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else {
@@ -128,7 +116,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case LDD: // Rd ← [A]
+						case LDD:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -140,7 +128,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case LDX: // Rd ← [Rs]
+						case LDX:
 							physicalAddress = MemoryManager.translate(reg[ir.r2], pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -154,7 +142,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case STD: // [A] ← Rs
+						case STD:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidAddress(physicalAddress, pageTable)) {
 								interruptFlag = InterruptTypes.INVALID_ADDRESS;
@@ -167,7 +155,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case ADD: // Rd ← Rd + Rs
+						case ADD:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -180,7 +168,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case MULT: // Rd ← Rd * Rs
+						case MULT:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -194,7 +182,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case ADDI: // Rd ← Rd + k
+						case ADDI:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.causesOverflow(reg[ir.r1], ir.p, InterruptChecker.SUM)) {
@@ -205,7 +193,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case STX: // [Rd] ←Rs
+						case STX:
 							physicalAddress = MemoryManager.translate(reg[ir.r1], pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -220,7 +208,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case SUB: // Rd ← Rd - Rs
+						case SUB:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -234,7 +222,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case SUBI: // Rd ← Rd – k
+						case SUBI:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.causesOverflow(reg[ir.r1], ir.p,
@@ -246,7 +234,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case JMP: // PC ← k
+						case JMP:
 							pc = ir.p;
 							break;
 						case JMPI:
@@ -257,7 +245,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
+						case JMPIG:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -269,7 +257,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIL: // if Rc < 0 then PC ← Rs Else PC ← PC +1
+						case JMPIL:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -281,7 +269,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIE: // If Rc = 0 Then PC ← Rs Else PC ← PC +1
+						case JMPIE:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -293,7 +281,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIM: // PC ← [A]
+						case JMPIM:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidAddress(physicalAddress, pageTable)) {
 								interruptFlag = InterruptTypes.INVALID_ADDRESS;
@@ -302,7 +290,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPILM: // if Rc < 0 then PC ← [A] Else PC ← PC +1
+						case JMPILM:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -315,7 +303,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIGM: // if Rc > 0 then PC ← [A] Else PC ← PC +1
+						case JMPIGM:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -328,7 +316,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case JMPIEM: // if Rc = 0 then PC ← [A] Else PC ← PC +1
+						case JMPIEM:
 							physicalAddress = MemoryManager.translate(ir.p, pageTable);
 							if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
@@ -341,7 +329,7 @@ public class CPU extends Thread {
 							}
 							break;
 
-						case SWAP: // T ← Ra | Ra ← Rb | Rb ←T
+						case SWAP:
 							if (InterruptChecker.isInvalidRegister(ir.r1, reg.length)) {
 								interruptFlag = InterruptTypes.INVALID_REGISTER;
 							} else if (InterruptChecker.isInvalidRegister(ir.r2, reg.length)) {
@@ -364,7 +352,7 @@ public class CPU extends Thread {
 							pc++;
 							break;
 
-						case STOP: // Para a execucao
+						case STOP:
 							interruptFlag = InterruptTypes.END_OF_PROGRAM;
 							break;
 
@@ -372,22 +360,18 @@ public class CPU extends Thread {
 						case ___:
 							break;
 
-						// Instrucao invalida
 						default:
 							interruptFlag = InterruptTypes.INVALID_INSTRUCTION;
 							break;
 					}
 
-					// Testa interrupcao de clock.
 					if (interruptFlag == InterruptTypes.NO_INTERRUPT
 							&& instructionsCounter == MySystem.MAX_CPU_CYCLES) {
 						interruptFlag = InterruptTypes.CLOCK_INTERRUPT;
 						break;
 					}
 
-					// Segue o loop se nao houve interrupcao.
 					if (interruptFlag == InterruptTypes.NO_INTERRUPT) {
-						// Checa se algum IO terminou.
 						if (Console.FINISHED_IO_PROCESS_IDS.size() > 0) {
 							interruptFlag = InterruptTypes.IO_FINISHED;
 							break;
@@ -395,10 +379,8 @@ public class CPU extends Thread {
 						continue;
 					}
 
-					// Houve interrupcao, deve ser tratada (fora do loop).
 					break;
 				}
-				// Trata interrupção.
 				interruptHandler.handle();
 			} catch (InterruptedException error) {
 				error.printStackTrace();
@@ -406,6 +388,3 @@ public class CPU extends Thread {
 		}
 	}
 }
-// ------------------ C P U - fim
-// ------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------------

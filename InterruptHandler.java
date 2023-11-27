@@ -10,7 +10,6 @@ public class InterruptHandler {
 
         InterruptTypes interruptFlag = cpu.getInterruptFlag();
 
-        // Houve interrupcao.
         System.out.println("\nINTERRUPCAO ACIONADA - MOTIVO:");
 
         switch (interruptFlag) {
@@ -63,13 +62,10 @@ public class InterruptHandler {
 
     private void endProcess() {
         if (ProcessManager.RUNNING != null) {
-            // Finaliza processo (perde a referencia).
             ProcessManager.destroyProcess(cpu.getCurrentProcessId(), cpu.getPageTable());
             ProcessManager.RUNNING = null;
         }
-        // Resetando interruptFlag da CPU.
         cpu.setInterruptFlag(InterruptTypes.NO_INTERRUPT);
-        // Libera escalonador.
         if (Dispatcher.SEMA_DISPATCHER.availablePermits() == 0) {
             Dispatcher.SEMA_DISPATCHER.release();
         }
@@ -77,13 +73,9 @@ public class InterruptHandler {
 
     private void saveProcess() {
         ProcessManager.RUNNING = null;
-        // Salva PCB.
         PCB process = cpu.unloadPCB();
-        // Coloca na fila de prontos.
         ProcessManager.READY_LIST.add(process);
-        // Resetando interruptFlag da CPU.
         cpu.setInterruptFlag(InterruptTypes.NO_INTERRUPT);
-        // Libera escalonador.
         if (Dispatcher.SEMA_DISPATCHER.availablePermits() == 0 && ProcessManager.RUNNING == null) {
             Dispatcher.SEMA_DISPATCHER.release();
         }
@@ -93,21 +85,15 @@ public class InterruptHandler {
         ProcessManager.RUNNING = null;
         PCB process = cpu.unloadPCB();
         IORequest ioRequest;
-        // Checa se o pedido é de leitura ou de escrita.
         if (cpu.getReg()[7] == 1) {
             ioRequest = new IORequest(process, IORequest.OperationTypes.READ);
         } else {
             ioRequest = new IORequest(process, IORequest.OperationTypes.WRITE);
         }
-        // Coloca na lista de bloqueados.
         ProcessManager.BLOCKED_LIST.add(process);
-        // Cria uma requisição de IO na lista.
         Console.IO_REQUESTS.add(ioRequest);
-        // Resetando interruptFlag da CPU.
         cpu.setInterruptFlag(InterruptTypes.NO_INTERRUPT);
-        // Libera o console.
         Console.SEMA_CONSOLE.release();
-        // Libera escalonador.
         if (Dispatcher.SEMA_DISPATCHER.availablePermits() == 0 && ProcessManager.RUNNING == null) {
             Dispatcher.SEMA_DISPATCHER.release();
         }
@@ -117,16 +103,10 @@ public class InterruptHandler {
         ProcessManager.RUNNING = null;
         int finishedIOProcessId = Console.getFirstFinishedIOProcessId();
         PCB finishedIOProcess = ProcessManager.findBlockedProcessById(finishedIOProcessId);
-        // Salva PCB.
         PCB interruptedProcess = cpu.unloadPCB();
-        // Coloca o processo interrompido na fila de prontos.
         ProcessManager.READY_LIST.add(interruptedProcess);
-        // Resetando interruptFlag da CPU.
         cpu.setInterruptFlag(InterruptTypes.NO_INTERRUPT);
-        // Colocando processo que terminou IO na fila de prontos na primeira
-        // posição para ser executado logo em seguida.
         ProcessManager.READY_LIST.addFirst(finishedIOProcess);
-        // Escreve o valor (ioRequestValue) na memória ou printa ele na tela.
         int physicalAddress = MemoryManager.translate(finishedIOProcess.getReg()[8], finishedIOProcess.getPageTable());
         if (finishedIOProcess.getReg()[7] == 1) {
             cpu.m[physicalAddress].opc = Opcode.DATA;
@@ -159,7 +139,6 @@ public class InterruptHandler {
                             + "\n");
         }
         ProcessManager.READY_LIST.addFirst(finishedIOProcess);
-        // Libera escalonador.
         if (Dispatcher.SEMA_DISPATCHER.availablePermits() == 0 && ProcessManager.RUNNING == null) {
             Dispatcher.SEMA_DISPATCHER.release();
         }

@@ -1,15 +1,3 @@
-/**
- * @author Arthur Sudbrack Ibarra, Luiz Eduardo Mello dos Reis, Willian Magnum
- *         Albeche
- */
-
-// PUCRS - Escola Politécnica - Sistemas Operacionais
-// Prof. Fernando Dotti
-// Código fornecido como parte da solução do projeto de Sistemas Operacionais
-// Nomes: Arthur Sudbrack Ibarra, Luiz Eduardo Mello dos Reis e Willian Magnum
-// Albeche
-// Fase 1 - máquina virtual (vide enunciado correspondente)
-//
 public class MySystem {
 
 	public VM vm;
@@ -23,11 +11,9 @@ public class MySystem {
 	public static final int MAX_CPU_CYCLES = 10;
 
 	public MySystem() {
-		vm = new VM(); // a VM com tratamento de interrupções
+		vm = new VM();
 	}
 
-	// -------------------------------------------------------------------------------------------------------
-	// ------------------- instancia e testa sistema
 	public static void main(String args[]) {
 
 		MySystem system = new MySystem();

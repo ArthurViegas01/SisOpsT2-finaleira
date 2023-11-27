@@ -15,7 +15,6 @@ public class Dispatcher extends Thread {
     public void run() {
         while (true) {
             try {
-                // Espera processo pronto.
                 SEMA_DISPATCHER.acquire();
                 if (ProcessManager.READY_LIST.size() > 0) {
                     ProcessManager.RUNNING = ProcessManager.READY_LIST.removeFirst();
@@ -23,7 +22,6 @@ public class Dispatcher extends Thread {
                     System.out.println("\nEscalonando processo com ID = " + nextProccess.getId() + " ["
                             + ProcessManager.getProgramNameByProcessId(nextProccess.getId()) + "]\n");
                     cpu.loadPCB(nextProccess);
-                    // CPU liberada.
                     cpu.SEMA_CPU.release();
                 }
             } catch (InterruptedException error) {

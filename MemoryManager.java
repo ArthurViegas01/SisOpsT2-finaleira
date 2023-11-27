@@ -1,13 +1,11 @@
 import java.util.LinkedList;
 
-public class MemoryManager {//gerenciador de memoria
+public class MemoryManager {
 
     private static boolean[] frames;
 
     static {
-        // frames
         frames = new boolean[(int) Math.ceil((double) MySystem.MEMORY_SIZE / MySystem.PAGE_SIZE)];
-        // colocando frames como livres
         for (int i = 0; i < frames.length; i++) {
             frames[i] = true;
         }
@@ -30,7 +28,6 @@ public class MemoryManager {//gerenciador de memoria
                 pageTable.add(i);
             }
             if (framesNeeded <= framesAllocated) {
-                // OK!
                 hasSpace = true;
                 break;
             }
@@ -42,7 +39,7 @@ public class MemoryManager {//gerenciador de memoria
         return null;
 
     }
-    //desaclocar paginas
+
     public static void dealloc(LinkedList<Integer> pageTable) {
         for (int i = 0; i < pageTable.size(); i++) {
             frames[pageTable.get(i)] = true;
@@ -60,7 +57,7 @@ public class MemoryManager {//gerenciador de memoria
         int pageIndex = logicAddress / MySystem.PAGE_SIZE;
         return pageIndex;
     }
-    //print de pagunas
+    
     public static void printPageTable(LinkedList<Integer> pageTable) {
         for (int i = 0; i < pageTable.size(); i++) {
             System.out.println("[" + i + "] " + pageTable.get(i));

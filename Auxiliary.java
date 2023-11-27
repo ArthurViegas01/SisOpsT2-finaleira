@@ -1,6 +1,5 @@
 import java.util.LinkedList;
 
-// -------------------------------------------  classes e funcoes auxiliares
 public class Auxiliary {
 
     public static String dump(Word w) {
@@ -36,4 +35,3 @@ public class Auxiliary {
         }
     }
 }
-// ------------------------------------------- fim classes e funcoes auxiliares

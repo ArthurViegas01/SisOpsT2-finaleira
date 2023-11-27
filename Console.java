@@ -23,7 +23,6 @@ public class Console extends Thread {
         while (true) {
             try {
                 SEMA_CONSOLE.acquire();
-                // Entrou algum processo bloqueado.
                 IORequest ioRequest = IO_REQUESTS.removeFirst();
                 if (ioRequest.getOperationType() == IORequest.OperationTypes.READ) {
                     read(ioRequest.getProcess());

@@ -1,8 +1,8 @@
-public class Word { // cada posicao da memoria tem uma instrucao (ou um dado)
-    public Opcode opc; //
-    public int r1; // indice do primeiro registrador da operacao (Rs ou Rd cfe opcode na tabela)
-    public int r2; // indice do segundo registrador da operacao (Rc ou Rs cfe operacao)
-    public int p; // parametro para instrucao (k ou A cfe operacao), ou o dado, se opcode = DADO
+public class Word {
+    public Opcode opc;
+    public int r1;
+    public int r2; 
+    public int p;
 
     public Word(Opcode _opc, int _r1, int _r2, int _p) {
         opc = _opc;
