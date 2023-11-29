@@ -13,26 +13,28 @@ public class Shell extends Thread {
 
     @Override
     public void run() {
-        String menu = "===== MENU =====\n" +
-                "\n= Criar um processo =\n" +
-                "\n[1] - Fibonacci10" +
-                "\n[2] - Fatorial" +
-                "\n[3] - PA (Fibonacci)" +
-                "\n[4] - PB (Fatorial)" +
-                "\n[5] - PC (Bubblesort)" +
-                "\n[6] - Test In" +
-                "\n[7] - Test Out" +
+        String menu = "===== Bem-vindo ao Menu do Sistema =====\n" +
+                
+                "\nSelecione uma ação:\n" +
+                
+                "\n1 - Iniciar Processo Fibonacci" +
+                "\n2 - Iniciar Processo Fatorial" +
+                "\n3 - Iniciar Processo PA (Fibonacci)" +
+                "\n4 - Iniciar Processo PB (Fatorial)" +
+                "\n5 - Iniciar Processo PC (Bubblesort)" +
+                "\n6 - Iniciar Processo Test In" +
+                "\n7 - Iniciar Processo Test Out" +
+                
                 "\n\n= Opções extras =\n" +
-                "\n[dump] - Dump da memória" +
+                "\nDump da memória - dump" +
                 "\n\n = Múltiplos comandos =\n\n" +
                 "Você pode executar vários comandos de uma vez usando o separador ';'" +
-                "\n\nExemplo: 4;dump;3" +
-                "\nEfeito: Cria um processo [4 - PB], realiza o dump da memória, cria um processo [5 - PC]";
+                "\n\nExemplo: Digite '1;dump;2' para criar um processo Fibonacci, realizar um despejo de memória e, em seguida, criar um processo Fatorial.";
         System.out.println(menu);
         while (true) {
-            System.out.println("\n[AVISO: Shell está esperando input do usuário]\n");
+            System.out.println("\n[AVISO: Esperando input do usuário]\n");
             String option = scanner.nextLine();
-            System.out.println("\nShell recebeu o input do usuário [OK]\n");
+            System.out.println("\nRecebeu o input do usuário [OK]\n");
             String[] processes = option.toLowerCase().split(";");
             for (String process : processes) {
                 switch (process) {
